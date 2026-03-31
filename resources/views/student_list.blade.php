@@ -23,7 +23,7 @@
                 </div>
                 <div class="col-md-3 text-end">
                     <a class="btn btn-sm btn-light" href="{{ route('students.index', array_merge(request()->except('page'), ['sort' => ($sort ?? '') === 'name_asc' ? 'name_desc' : 'name_asc'])) }}">
-                        Sắp xếp tên @if(($sort ?? '') === 'name_asc') A→Z @elseif(($sort ?? '') === 'name_desc') Z→A @else (mới) @endif
+                        Sắp xếp tên @if(($sort ?? '') === 'name_asc') Z→A @elseif(($sort ?? '') === 'name_desc') A→Z @else (mới) @endif
                     </a>
                 </div>
             </form>
