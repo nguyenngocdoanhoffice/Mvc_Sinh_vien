@@ -11,7 +11,7 @@ class StudentController extends Controller
     {
         $search = $request->query('search');
         $major = $request->query('major');
-        $sort = $request->query('sort', 'id_asc');
+        $sort = $request->query('sort', 'name_asc');
 
         $query = Student::query();
 
@@ -23,10 +23,12 @@ class StudentController extends Controller
             $query->where('major', 'like', "%{$major}%");
         }
 
+        $firstLetterExpr = "LOWER(LEFT(TRIM(SUBSTRING_INDEX(name, ' ', -1)), 1))";
+
         if ($sort === 'name_asc') {
-            $query->orderByRaw("SUBSTRING_INDEX(name, ' ', -1) ASC");
+            $query->orderByRaw("{$firstLetterExpr} ASC")->orderByRaw("TRIM(SUBSTRING_INDEX(name, ' ', -1)) ASC");
         } elseif ($sort === 'name_desc') {
-            $query->orderByRaw("SUBSTRING_INDEX(name, ' ', -1) DESC");
+            $query->orderByRaw("{$firstLetterExpr} DESC")->orderByRaw("TRIM(SUBSTRING_INDEX(name, ' ', -1)) DESC");
         } else {
             $query->orderBy('id', 'asc');
         }
