@@ -1,41 +1,30 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Sửa sinh viên</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-light">
+@extends('layouts.master')
 
-<div class="container mt-5">
+@section('title','Sửa sinh viên')
+
+@section('content')
     <div class="card shadow p-4 col-md-6 mx-auto">
         <h3 class="text-center mb-3">Sửa sinh viên</h3>
 
-        @if($errors->any())
-        <div class="alert alert-danger">
-            @foreach($errors->all() as $err)
-                <div>{{ $err }}</div>
-            @endforeach
-        </div>
-        @endif
-
-        <form method="POST" action="/update/{{ $student->id }}">
+        <form method="POST" action="{{ route('students.update', $student->id) }}">
             @csrf
+            @method('PUT')
 
             <div class="mb-3">
                 <label class="form-label">Họ tên</label>
-                <input type="text" name="name" value="{{ $student->name }}" class="form-control">
+                <input type="text" name="name" value="{{ old('name', $student->name) }}" class="form-control @error('name') is-invalid @enderror">
+                @error('name') <div class="invalid-feedback">{{ $message }}</div> @enderror
             </div>
 
             <div class="mb-3">
                 <label class="form-label">Ngành học</label>
-                <input type="text" name="major" value="{{ $student->major }}" class="form-control">
+                <input type="text" name="major" value="{{ old('major', $student->major) }}" class="form-control @error('major') is-invalid @enderror">
+                @error('major') <div class="invalid-feedback">{{ $message }}</div> @enderror
             </div>
 
             <button class="btn btn-success w-100">Cập nhật</button>
-            <a href="/" class="btn btn-secondary w-100 mt-2">Quay lại</a>
+            <a href="{{ route('students.index') }}" class="btn btn-secondary w-100 mt-2">Quay lại</a>
         </form>
     </div>
-</div>
+@endsection
 
-</body>
-</html>

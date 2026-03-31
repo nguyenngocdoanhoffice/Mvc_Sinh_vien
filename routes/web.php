@@ -3,12 +3,16 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\StudentController;
 
-Route::get('/', [StudentController::class, 'index']);
+// Home page - list students
+Route::get('/', [StudentController::class, 'index'])->name('students.index');
 
-Route::get('/add', [StudentController::class, 'create']);
-Route::post('/store', [StudentController::class, 'store']);
+// Create student
+Route::get('/students/create', [StudentController::class, 'create'])->name('students.create');
+Route::post('/students', [StudentController::class, 'store'])->name('students.store');
 
-Route::get('/delete/{id}', [StudentController::class, 'delete']);
+// Edit / Update student
+Route::get('/students/{student}/edit', [StudentController::class, 'edit'])->name('students.edit');
+Route::put('/students/{student}', [StudentController::class, 'update'])->name('students.update');
 
-Route::get('/edit/{id}', [StudentController::class, 'edit']);
-Route::post('/update/{id}', [StudentController::class, 'update']);
+// Delete student (uses DELETE)
+Route::delete('/students/{student}', [StudentController::class, 'destroy'])->name('students.destroy');

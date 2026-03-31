@@ -9,15 +9,31 @@ class StudentController extends Controller
 {
     public function index(Request $request)
     {
-        $search = $request->search;
+        $search = $request->query('search');
+        $major = $request->query('major');
+        $sort = $request->query('sort', 'id_asc');
 
-        $allStudents = Student::orderBy('id')->get();
+        $query = Student::query();
 
-        $students = Student::when($search, function ($query, $search) {
-            return $query->where('name', 'like', "%$search%");
-        })->orderBy('id')->paginate(5);
+        if ($search) {
+            $query->where('name', 'like', "%{$search}%");
+        }
 
-        return view('student_list', compact('students', 'search', 'allStudents'));
+        if ($major) {
+            $query->where('major', 'like', "%{$major}%");
+        }
+
+        if ($sort === 'name_asc') {
+            $query->orderByRaw("SUBSTRING_INDEX(name, ' ', -1) ASC");
+        } elseif ($sort === 'name_desc') {
+            $query->orderByRaw("SUBSTRING_INDEX(name, ' ', -1) DESC");
+        } else {
+            $query->orderBy('id', 'asc');
+        }
+
+        $students = $query->paginate(5)->appends($request->only(['search', 'major', 'sort']));
+
+        return view('student_list', compact('students', 'search', 'major', 'sort'));
     }
 
     public function create()
@@ -27,35 +43,37 @@ class StudentController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|min:3',
-            'major' => 'required'
+        $data = $request->validate([
+            'name' => 'required|min:3|max:255',
+            'major' => 'required|max:255',
         ]);
 
-        Student::create($request->all());
-        return redirect('/');
+        Student::create($data);
+
+        return redirect()->route('students.index')->with('success', 'Thêm sinh viên thành công');
     }
 
-    public function delete($id)
+    public function edit(Student $student)
     {
-        Student::find($id)->delete();
-        return redirect('/');
-    }
-
-    public function edit($id)
-    {
-        $student = Student::find($id);
         return view('edit_student', compact('student'));
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, Student $student)
     {
-        $request->validate([
-            'name' => 'required|min:3',
-            'major' => 'required'
+        $data = $request->validate([
+            'name' => 'required|min:3|max:255',
+            'major' => 'required|max:255',
         ]);
 
-        Student::find($id)->update($request->all());
-        return redirect('/');
+        $student->update($data);
+
+        return redirect()->route('students.index')->with('success', 'Cập nhật sinh viên thành công');
+    }
+
+
+    public function destroy(Student $student)
+    {
+        $student->delete();
+        return redirect()->route('students.index')->with('success', 'Xóa sinh viên thành công');
     }
 }
