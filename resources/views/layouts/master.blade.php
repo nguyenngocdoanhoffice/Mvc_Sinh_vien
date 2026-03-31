@@ -42,20 +42,5 @@
             <small class="text-muted">© {{ date('Y') }} - Ứng dụng quản lý sinh viên</small>
         </div>
     </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            var deleteModal = document.getElementById('deleteModal');
-            if (deleteModal) {
-                deleteModal.addEventListener('show.bs.modal', function (event) {
-                    var button = event.relatedTarget;
-                    var action = button.getAttribute('data-action');
-                    var form = deleteModal.querySelector('form');
-                    if (form) form.action = action;
-                });
-            }
-        });
-    </script>
 </body>
 </html>
